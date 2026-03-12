@@ -1,5 +1,5 @@
 import React from "react";
-import MotionSection from "./MotionSection";
+import MotionSection, { MotionItem } from "./MotionSection";
 
 const AboutSection = () => {
   return (
@@ -10,24 +10,39 @@ const AboutSection = () => {
       delay={0.05}
     >
       <div className="max-w-6xl mx-auto">
-        <h2 className="text-4xl font-bold text-center text-gray-900 dark:text-white mb-12">
+        <MotionItem
+          as="h2"
+          className="text-4xl font-bold text-center text-gray-900 dark:text-white mb-12"
+          variant="fade"
+        >
           About Me
-        </h2>
+        </MotionItem>
         <div className="grid sm:grid-cols-1 gap-12 items-center">
-          <div className="text-lg text-gray-800 dark:text-gray-300">
+          <MotionItem
+            className="text-lg text-gray-800 dark:text-gray-300"
+            delay={0.1}
+            variant="slide-right"
+          >
             <p className=" mb-4">
-              I{"'"}m a passionate full-stack developer with expertise in
-              building modern web applications using the MEARN stack. I love
-              creating efficient, scalable, and user-friendly solutions.
+              I{"'"}m a front-end developer with 2 years of experience building
+              responsive, high-performance web applications using React.js,
+              Next.js, and TypeScript. I care deeply about clean architecture,
+              accessible UI, and performance-focused implementation.
             </p>
             <p className="mb-4">
-              With a strong foundation in both frontend and backend development,
-              I bring ideas to life through clean code and intuitive design.
+              I{"'"}m currently working as a Full-Stack Developer at Pulse
+              Management, where I ship production experiences like WDI, Vamar,
+              and UpSite. Before that, I worked remotely as a Front-End
+              Developer at Valkii and helped deliver 7+ client-facing products
+              for real users.
             </p>
             <p>
-              When I{"'"}m not coding, I{"'"}m learning new technologies.
+              My background also includes the ITI intensive MERN program, and I
+              enjoy solving product problems through scalable components,
+              state-driven interfaces, SSR/SSG patterns, and polished user
+              experiences.
             </p>
-          </div>
+          </MotionItem>
         </div>
       </div>
     </MotionSection>

@@ -47,6 +47,13 @@ export default function SkillBar() {
             }
             .skill-track:hover {
                 animation-play-state: paused;
+            }
+
+            @media (prefers-reduced-motion: reduce) {
+                .skill-track {
+                    animation: none;
+                    transform: none;
+                }
             }`}
       </style>
 

@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import Footer from "./sections/Footer";
 import HeroSection from "./sections/HeroSection";
 import Navigation from "./sections/Navigation";
+import ScrollToTopButton from "./sections/ScrollToTopButton";
 
 const AboutSection = dynamic(() => import("./sections/AboutSection"));
 const ContactSection = dynamic(() => import("./sections/ContactSection"));
@@ -27,12 +28,6 @@ export default function Portfolio() {
         if (visibleSections.length > 0) {
           setActiveSection(visibleSections[0].target.id);
         }
-
-        entries.forEach((entry) => {
-          if (entry.isIntersecting && entry.target.id !== "home") {
-            entry.target.classList.add("section-visible");
-          }
-        });
       },
       {
         root: null,
@@ -45,9 +40,6 @@ export default function Portfolio() {
       sections.forEach((id) => {
         const element = document.getElementById(id);
         if (!element || observedElements.has(element)) return;
-        if (id !== "home") {
-          element.classList.add("scroll-reveal");
-        }
         observer.observe(element);
         observedElements.add(element);
       });
@@ -93,6 +85,7 @@ export default function Portfolio() {
           <ContactSection />
         </div>
       </main>
+      <ScrollToTopButton />
       <Footer />
     </>
   );

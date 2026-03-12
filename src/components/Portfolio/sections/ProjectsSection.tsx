@@ -1,93 +1,108 @@
 import React from "react";
 import ProjectCard from "../../ProjectCards";
-import MotionSection from "./MotionSection";
+import MotionSection, { MotionItem } from "./MotionSection";
 const ProjectsSection = () => {
   const projects = [
     {
-      title: "Skill-Up (Full-Stack)",
-      description: `A Full-stack education platform.
-            Key technical implementations include JWT auth with role-based authorization (RBAC),
-            an optimized video delivery system for lessons, and automated email services for account security.
-            Stripe Payment Integration.
-            The platform also features 3 Dashboards for instructors, students, and admins. each dashboard has its own features and permissions.`,
+      title: "WDI Multi Vendor E-Commerce",
+      description:
+        "Multi-vendor e-commerce platform built with Next.js, TypeScript, and Tailwind CSS. Features a polished storefront experience with category browsing, product discovery, and a responsive shopping flow across devices.",
       tech: [
-        "Node.js",
-        "Express.js",
-        "MongoDB",
         "Next.js",
-        "React.js",
+        "React",
+        "TypeScript",
+        "Tailwind CSS",
+        "ShadCN UI",
+        "i18next",
         "Zustand",
-        "CSS3",
-        "Tawilwind CSS",
-        "Framer Motion",
+        "sooner",
+        "react-pro-sidebar",
+        "react-hook-form",
       ],
-      github: "https://github.com/Ahmed-Ossamaa/skill-up",
-      demo: "https://skill-up-edu.vercel.app/",
-      image: "/assets/project.webp",
+      demo: "https://wdi-dev-e-commerce.vercel.app/en",
+      image: "/assets/wdi.webp",
     },
     {
-      title: "El-Mister LMS (Full-Stack)",
-      description: `Full-stack Private Lessons platform.
-            Key technical implementations include JWT auth with role-based authorization (RBAC),
-            Socket.io for real-time Chat between users and Notification system.
-            AI Integration(for C.S), Sripe Payment Integration,OAuth Integration.
-            an optimized video delivery system for lessons, and automated email services for account security.
-            The platform also features 4 Dashboards for instructors,Parents, students, and admins.`,
+      title: "FunJoy",
+      description:
+        "Interactive storefront for FunJoy, centered on browsing inflatable games and party experiences through a playful, conversion-focused user experience.",
       tech: [
-        "Node.js",
-        "Express.js",
-        "MongoDB",
-        "Socket.io",
         "Next.js",
-        "React.js",
-        "Redux",
+        "React",
+        "TypeScript",
+        "Tailwind CSS",
+        "ShadCN UI",
+        "framer-motion",
+        "react-hook-form",
+      ],
+      demo: "https://fun-joy-front.vercel.app/",
+      image: "/assets/funjoy.webp",
+    },
+    {
+      title: "VAMAR Interior Design",
+      description:
+        "Brand-focused website for VAMAR Interior Design, showcasing services, company information, contact paths, and a polished visual presentation tailored to the interior design space.",
+      tech: [
+        "Next.js",
+        "React",
+        "TypeScript",
+        "Tailwind CSS",
+        "ShadCN UI",
+        "framer-motion",
+        "nodemailer",
+        "react-hook-form",
+      ],
+      demo: "https://www.vamar.ae/",
+      image: "/assets/vamar.webp",
+    },
+    {
+      title: "UP Site",
+      description:
+        "Responsive landing-page style website with a polished presentation and conversion-focused sections, deployed on Vercel for a fast public-facing experience.",
+      tech: [
+        "Next.js",
+        "React",
+        "TypeScript",
+        "Tailwind CSS",
+        "ShadCN UI",
+        "framer-motion",
+      ],
+      demo: "https://up-site-omega.vercel.app/",
+      github: "https://github.com/MohamedFahim123/UpSite",
+      image: "/assets/upsite.webp",
+    },
+    {
+      title: "TECNO E-Commerce",
+      description:
+        "Multi-actor e-commerce platform with customer, seller, and admin dashboards. Includes authentication, wishlist and cart flows, product browsing, order history, and responsive storefront experiences built in a component-based SPA.",
+      tech: [
+        "HTML5",
         "CSS3",
-        "Tawilwind CSS",
-        "Framer Motion",
+        "JavaScript",
+        "Bootstrap",
+        "IndexedDB",
+        "Chart.js",
+        "Swiper.js",
       ],
-      github: [
-        "https://github.com/Ahmed-Ossamaa/lms-elmister-iti-api",
-        "https://github.com/Ahmed-Ossamaa/lms-elmister-iti-ui",
-      ],
-      demo: "https://lms-elmister-iti-ui.vercel.app/",
-      image: "/assets/project.webp",
-    },
-
-    {
-      title: "E-Commerce Platform",
-      description:
-        "SPA e-commerce with user authentication, Admin dashboard (Management and Stats), using only Vanilla JS. (No Frameworks)",
-      tech: ["JS", "HTML5", "CSS3", "Bootstrap"],
-      github: "https://github.com/Ahmed-Ossamaa/Ecommerce-ITI-Vanilla-js",
-      demo: "https://e-commerce-iti-delta.vercel.app/",
-      image:
-        "/assets/project.webp",
+      github: "https://github.com/MohamedFahim123/cst-project",
+      demo: "https://cst-project-xi.vercel.app",
+      image: "/assets/tecno.webp",
     },
     {
-      title: "Book Tracker (Full-Stack)",
+      title: "BookStoreTask",
       description:
-        "Full-stack Book tracking app with full CRUD operations and JWT auth. Admin Dashboard featuring role-based access control for usesr and book management",
-      tech: ["React", "Node.js", "Express", "MongoDB", "Tailwind CSS"],
-      github: "https://github.com/Ahmed-Ossamaa/book-tracker",
-      demo: "https://book-tracker-delta-pearl.vercel.app/",
-      image: "/assets/project.webp",
-    },
-
-    {
-      title: "Nala Automotive (Full-Stack)",
-      description:
-        "Full-stack Car resale platform with full CRUD operations and JWT auth .Admin Dashboard featuring role-based access control for users and cars management",
+        "Bookstore web app with authentication, cart syncing, checkout using Stripe, and modular routing. Built with a scalable React + TypeScript setup and Redux-powered state management.",
       tech: [
         "React",
-        "Node.js",
-        "Express",
-        "MongoDB",
-        "Tailwind CSS",
-        "React-Query",
+        "TypeScript",
+        "Redux Toolkit",
+        "React Router",
+        "Stripe",
+        "Vite",
       ],
-      github: "https://github.com/Ahmed-Ossamaa/Nala-Automotive",
-      demo: "https://nala-automotive.vercel.app/",
-      image: "/assets/project.webp",
+      github: "https://github.com/MohamedFahim123/BookStoreTask",
+      demo: "https://book-store-task.vercel.app",
+      image: "/assets/bookstore.webp",
     },
   ];
 
@@ -99,16 +114,26 @@ const ProjectsSection = () => {
       delay={0.1}
     >
       <div className="max-w-6xl mx-auto">
-        <h2 className="text-4xl font-bold text-center text-gray-900 dark:text-white mb-12">
+        <MotionItem
+          as="h2"
+          className="text-4xl font-bold text-center text-gray-900 dark:text-white mb-12"
+          variant="fade"
+        >
           Featured Projects
-        </h2>
+        </MotionItem>
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
           {projects.map((project, index) => (
-            <ProjectCard key={index} project={project} />
+            <MotionItem
+              key={project.title}
+              className="h-full"
+              delay={0.08 + index * 0.05}
+              variant="zoom"
+            >
+              <ProjectCard project={project} />
+            </MotionItem>
           ))}
         </div>
       </div>
-     
     </MotionSection>
   );
 };

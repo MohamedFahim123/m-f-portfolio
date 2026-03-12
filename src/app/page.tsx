@@ -4,7 +4,7 @@ import { Metadata } from "next";
 export const metadata: Metadata = {
   title: "Mohamed Fahim - Portfolio",
   description:
-    "Portfolio By Mohamed Fahim - Frontend Developer and Node.js Developer",
+    "Portfolio of Mohamed Fahim, a Front-End Developer focused on React, Next.js, TypeScript, and high-performance web experiences.",
   icons: {
     icon: "/favicon.ico",
   },

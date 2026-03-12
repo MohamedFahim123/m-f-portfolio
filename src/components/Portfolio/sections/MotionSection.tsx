@@ -1,6 +1,15 @@
 "use client";
 
-import { ElementType, ReactNode, useEffect, useState } from "react";
+import { cn } from "@/lib/utils";
+import type { CSSProperties, ElementType, ReactNode } from "react";
+import { useEffect, useRef, useState } from "react";
+
+type MotionVariant =
+  | "fade"
+  | "fade-up"
+  | "zoom"
+  | "slide-left"
+  | "slide-right";
 
 interface MotionSectionProps {
   children: ReactNode;
@@ -8,22 +17,45 @@ interface MotionSectionProps {
   delay?: number;
   as?: ElementType;
   id?: string;
+  variant?: MotionVariant;
 }
 
-type FramerModule = typeof import("framer-motion");
-let framerModuleCache: FramerModule | null = null;
-let framerModulePromise: Promise<FramerModule> | null = null;
+interface MotionItemProps {
+  children: ReactNode;
+  className?: string;
+  delay?: number;
+  as?: ElementType;
+  variant?: MotionVariant;
+}
 
-const loadFramerMotion = () => {
-  if (framerModuleCache) return Promise.resolve(framerModuleCache);
-  if (!framerModulePromise) {
-    framerModulePromise = import("framer-motion").then((module) => {
-      framerModuleCache = module;
-      return module;
-    });
-  }
-  return framerModulePromise;
+type MotionStyle = CSSProperties & {
+  "--motion-delay"?: string;
 };
+
+const buildMotionStyle = (delay: number): MotionStyle => ({
+  "--motion-delay": `${delay}s`,
+});
+
+export function MotionItem({
+  children,
+  className,
+  delay = 0,
+  as: Tag = "div",
+  variant = "fade-up",
+}: MotionItemProps) {
+  const MotionTag = Tag as ElementType;
+
+  return (
+    <MotionTag
+      className={cn(className)}
+      data-motion-item
+      data-motion-variant={variant}
+      style={buildMotionStyle(delay)}
+    >
+      {children}
+    </MotionTag>
+  );
+}
 
 export default function MotionSection({
   children,
@@ -31,49 +63,76 @@ export default function MotionSection({
   delay = 0,
   as: Tag = "div",
   id,
+  variant = "fade-up",
 }: MotionSectionProps) {
-  const [framer, setFramer] = useState<FramerModule | null>(null);
-  const [reduceMotion, setReduceMotion] = useState<boolean>(false);
+  const sectionRef = useRef<HTMLElement | null>(null);
+  const [isReady, setIsReady] = useState(false);
+  const [isVisible, setIsVisible] = useState(false);
+  const [reduceMotion, setReduceMotion] = useState(false);
+  const MotionTag = Tag as ElementType;
 
   useEffect(() => {
     const mediaQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
-    setReduceMotion(mediaQuery.matches);
 
-    const handleChange = (event: MediaQueryListEvent) => {
-      setReduceMotion(event.matches);
+    const syncMotionPreference = (event?: MediaQueryListEvent) => {
+      setReduceMotion(event?.matches ?? mediaQuery.matches);
     };
 
-    mediaQuery.addEventListener("change", handleChange);
-
-    let mounted = true;
-    loadFramerMotion().then((module) => {
-      if (mounted) setFramer(module);
-    });
+    setIsReady(true);
+    syncMotionPreference();
+    mediaQuery.addEventListener("change", syncMotionPreference);
 
     return () => {
-      mounted = false;
-      mediaQuery.removeEventListener("change", handleChange);
+      mediaQuery.removeEventListener("change", syncMotionPreference);
     };
   }, []);
 
-  if (!framer || reduceMotion) {
-    return (
-      <Tag id={id} className={className}>
-        {children}
-      </Tag>
-    );
-  }
+  useEffect(() => {
+    const sectionElement = sectionRef.current;
 
-  const MotionTag = framer.motion.create(Tag);
+    if (!sectionElement || !isReady) {
+      return;
+    }
+
+    if (reduceMotion) {
+      setIsVisible(true);
+      return;
+    }
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (!entry.isIntersecting) {
+            return;
+          }
+
+          setIsVisible(true);
+          observer.unobserve(entry.target);
+        });
+      },
+      {
+        threshold: 0.2,
+        rootMargin: "0px 0px -12% 0px",
+      },
+    );
+
+    observer.observe(sectionElement);
+
+    return () => {
+      observer.disconnect();
+    };
+  }, [isReady, reduceMotion]);
 
   return (
     <MotionTag
+      ref={sectionRef}
       id={id}
-      className={className}
-      initial={{ opacity: 0, y: 24 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, amount: 0.2, margin: "0px 0px -10% 0px" }}
-      transition={{ duration: 0.45, ease: "easeOut", delay }}
+      className={cn(className)}
+      data-motion-section
+      data-motion-ready={isReady}
+      data-motion-variant={variant}
+      data-visible={isVisible}
+      style={buildMotionStyle(delay)}
     >
       {children}
     </MotionTag>
