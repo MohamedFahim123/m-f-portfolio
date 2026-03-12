@@ -111,7 +111,7 @@ const ProjectsSection = () => {
       as="section"
       id="projects"
       className="py-20 px-4 bg-white dark:bg-gray-800"
-      delay={0.1}
+      delay={0}
     >
       <div className="max-w-6xl mx-auto">
         <MotionItem

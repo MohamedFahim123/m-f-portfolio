@@ -13,7 +13,7 @@ import {
 } from "react-icons/si";
 
 const ICON_SIZE = 50;
-const SPEED_SECONDS = 20;
+const SPEED_SECONDS = 10;
 
 const icons = [
   { Comp: FaHtml5, color: "#E34F26", label: "HTML5" },
