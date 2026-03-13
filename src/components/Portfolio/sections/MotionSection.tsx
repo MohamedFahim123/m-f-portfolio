@@ -1,8 +1,16 @@
 "use client";
 
 import { cn } from "@/lib/utils";
-import type { CSSProperties, ElementType, ReactNode } from "react";
-import { useEffect, useRef, useState } from "react";
+import {
+  createContext,
+  type CSSProperties,
+  type ElementType,
+  type ReactNode,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 
 type MotionVariant =
   | "fade"
@@ -32,6 +40,51 @@ type MotionStyle = CSSProperties & {
   "--motion-delay"?: string;
 };
 
+type MotionContextValue = {
+  isReady: boolean;
+  reduceMotion: boolean;
+};
+
+const MotionContext = createContext<MotionContextValue>({
+  isReady: false,
+  reduceMotion: false,
+});
+
+let sharedMotionObserver: IntersectionObserver | null = null;
+const sharedMotionCallbacks = new WeakMap<Element, () => void>();
+
+const getSharedMotionObserver = () => {
+  if (sharedMotionObserver) {
+    return sharedMotionObserver;
+  }
+
+  sharedMotionObserver = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (!entry.isIntersecting) {
+          return;
+        }
+
+        const callback = sharedMotionCallbacks.get(entry.target);
+
+        if (!callback) {
+          return;
+        }
+
+        callback();
+        sharedMotionCallbacks.delete(entry.target);
+        sharedMotionObserver?.unobserve(entry.target);
+      });
+    },
+    {
+      threshold: 0.18,
+      rootMargin: "0px 0px -6% 0px",
+    },
+  );
+
+  return sharedMotionObserver;
+};
+
 const buildMotionStyle = (delay: number): MotionStyle => ({
   "--motion-delay": `${delay}s`,
 });
@@ -43,13 +96,45 @@ export function MotionItem({
   as: Tag = "div",
   variant = "fade-up",
 }: MotionItemProps) {
+  const itemRef = useRef<HTMLElement | null>(null);
+  const { isReady, reduceMotion } = useContext(MotionContext);
+  const [isVisible, setIsVisible] = useState(false);
   const MotionTag = Tag as ElementType;
+
+  useEffect(() => {
+    const itemElement = itemRef.current;
+
+    if (!itemElement || !isReady) {
+      return;
+    }
+
+    if (reduceMotion) {
+      setIsVisible(true);
+      return;
+    }
+
+    const observer = getSharedMotionObserver();
+    const revealItem = () => {
+      setIsVisible(true);
+    };
+
+    sharedMotionCallbacks.set(itemElement, revealItem);
+    observer.observe(itemElement);
+
+    return () => {
+      sharedMotionCallbacks.delete(itemElement);
+      observer.unobserve(itemElement);
+    };
+  }, [isReady, reduceMotion]);
 
   return (
     <MotionTag
+      ref={itemRef}
       className={cn(className)}
       data-motion-item
+      data-motion-ready={isReady}
       data-motion-variant={variant}
+      data-visible={isVisible}
       style={buildMotionStyle(delay)}
     >
       {children}
@@ -65,9 +150,7 @@ export default function MotionSection({
   id,
   variant = "fade-up",
 }: MotionSectionProps) {
-  const sectionRef = useRef<HTMLElement | null>(null);
   const [isReady, setIsReady] = useState(false);
-  const [isVisible, setIsVisible] = useState(false);
   const [reduceMotion, setReduceMotion] = useState(false);
   const MotionTag = Tag as ElementType;
 
@@ -87,54 +170,18 @@ export default function MotionSection({
     };
   }, []);
 
-  useEffect(() => {
-    const sectionElement = sectionRef.current;
-
-    if (!sectionElement || !isReady) {
-      return;
-    }
-
-    if (reduceMotion) {
-      setIsVisible(true);
-      return;
-    }
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (!entry.isIntersecting) {
-            return;
-          }
-
-          setIsVisible(true);
-          observer.unobserve(entry.target);
-        });
-      },
-      {
-        threshold: 0.05,
-        rootMargin: "0px 0px -8% 0px",
-      },
-    );
-
-    observer.observe(sectionElement);
-
-    return () => {
-      observer.disconnect();
-    };
-  }, [isReady, reduceMotion]);
-
   return (
-    <MotionTag
-      ref={sectionRef}
-      id={id}
-      className={cn(className)}
-      data-motion-section
-      data-motion-ready={isReady}
-      data-motion-variant={variant}
-      data-visible={isVisible}
-      style={buildMotionStyle(delay)}
-    >
-      {children}
-    </MotionTag>
+    <MotionContext.Provider value={{ isReady, reduceMotion }}>
+      <MotionTag
+        id={id}
+        className={cn("scroll-mt-24", className)}
+        data-motion-section
+        data-motion-ready={isReady}
+        data-motion-variant={variant}
+        style={buildMotionStyle(delay)}
+      >
+        {children}
+      </MotionTag>
+    </MotionContext.Provider>
   );
 }

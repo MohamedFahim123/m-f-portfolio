@@ -1,6 +1,8 @@
 import React from "react";
 import ProjectCard from "../../ProjectCards";
 import MotionSection, { MotionItem } from "./MotionSection";
+import Container from "@/components/ui/Container";
+
 const ProjectsSection = () => {
   const projects = [
     {
@@ -113,7 +115,7 @@ const ProjectsSection = () => {
       className="py-20 px-4 bg-white dark:bg-gray-800"
       delay={0}
     >
-      <div className="max-w-6xl mx-auto">
+      <Container className="overflow-hidden">
         <MotionItem
           as="h2"
           className="text-4xl font-bold text-center text-gray-900 dark:text-white mb-12"
@@ -125,15 +127,15 @@ const ProjectsSection = () => {
           {projects.map((project, index) => (
             <MotionItem
               key={project.title}
-              className="h-full"
+              className="h-full pb-4"
               delay={0.08 + index * 0.05}
-              variant="zoom"
+              variant={index % 3 === 0 ? "zoom" : index % 2 === 0 ? "slide-right" : "slide-left"}
             >
-              <ProjectCard project={project} />
+              <ProjectCard project={project} delay={0.08 + index * 0.05} />
             </MotionItem>
           ))}
         </div>
-      </div>
+      </Container>
     </MotionSection>
   );
 };
